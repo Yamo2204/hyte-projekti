@@ -19,6 +19,7 @@
         font-weight: normal;
         font-style: normal;
         font-variation-settings: 'wdth' 100;
+        background-color: rgb(255,255,255);
       }
       main {
         max-width: 700px;
@@ -37,7 +38,7 @@
     </style>
   </head>
 
-  <body>
+  <body style="background-color: rgb(255,255,255);">
     <main>
       <h1>Javascript harjoittelu</h1>
 
@@ -215,12 +216,42 @@
 
       <script>
         // JS funktiot
+        greet ('Yamama');
 
         // perinteinen funktiomäärittely
+        function greet(name) {
+          console.log(`Moikka ${name} !!!!!`);
 
+      
+            
+        }
         // function expression. Funtio joka on anonyymi mutta tallennetaan muuttujaan
+         function greet(name) {
+         console.log(`Moikka ${name} !!!!!`);
 
+
+      
+            
+        }
         // arrow funktio / nuolifunktio, edellistä yksikertaisempi ja lyhyempi
+        function greet(name) {
+         console.log(`Moikka ${name} !!!!!`);
+
+      
+            
+        }
+       
+        const greet2 = function(name) {
+         console.log(`Moikka ${name} !!!!!`);
+        };
+
+        const greet3 = (name) => {
+         console.log(`Moikka ${name} !!!!!`);
+        };
+        greet ('Yamama');
+        greet2 ('Ali');
+        greet3 ('Sara');
+
       </script>
 
       <p>2. Lisätään nappuloille kuuntelijat</p>
@@ -230,8 +261,47 @@
 
       <script>
         // Etsitään molemmat nappulat DOMista ja tallennetaan muuttujaan
+      let btn = document.getElementById('btn');
+      let btn2 = document.getElementById('btn2');
 
         // Funktio: vaihtaa taustavärin kahden vaihtoehdon välillä
+      function toggleBackground(evt) {
+        console.log('evt');
+        let currentColor = document.body.style.backgroundColor;
+        console.log('Taustaväri:', currentColor);
+
+        
+        if (currentColor === 'rgb(255, 255, 255)') {
+          console.log('Vaihdetaan pinkiiksi');
+          document.body.style.backgroundColor = 'rgb(255, 182, 190)';
+        } else {
+          console.log('Vaihdetaan valkoiseksi');
+          document.body.style.backgroundColor = 'rgb(255, 255, 255)';
+        }
+      }
+       function toggleBackground2() {
+
+        let currentColor = document.body.style.backgroundColor;
+        document.body.style.backgroundColor = 
+        currentColor === 'rgb(255, 255, 255)' ? 'rgb(255, 182, 190)' : 'rgb(255, 255, 255)';
+       }
+      // ehto ? arvoJosTosi : arvoJosEpätosi
+      let ika = 20;
+      let tulos = '';
+
+      if (ika >= 18) {
+        console.log('aikuinen');
+        tulos = 'aikuinen';
+      } else {
+        tulos = 'lapsi';
+      } tulos = ika >= 18 ? 'aikuinen' : 'lapsi';
+
+      console.log(tulos);
+
+
+
+      btn.addEventListener('click', toggleBackground);
+
 
         // Funktio: avataan uusi ikkuna
       </script>
@@ -258,9 +328,15 @@
 
       <script>
         // Estetään linkin normaali toiminta
+        let link = document.getElementById('link');
+        link.addEventListener('click', (event) => {
+          console.log('NOPE ei onnistu!!!!');
+          event.preventDefault();
+        });
       </script>
 
       <h3>Prevent Default / Estä perus käyttäytyminen FORMeissa</h3>
+    
 
       <p>
         <a href="https://www.w3schools.com/html/html_forms.asp" target="_blank"
@@ -270,15 +346,48 @@
 
       <form action="">
         <label for="fname">Etunimi:</label>
-        <input type="text" id="fname" name="fname" value="John" />
+        <input type="text" id="fname" name="fname" value="Yamama" />
         <label for="lname">Sukunimi:</label>
-        <input type="text" id="lname" name="lname" value="Doe" />
+        <input type="text" id="lname" name="lname" value="Alqaysi" />
         <input type="submit" value="Submit" />
       </form>
 
       <script>
         // Estetään formin normaalitoiminta ja pomitaan arvot formista JSn avulla jatkokäsittelyä varten
+        let form = document.querySelector('form');
+        form.addEventListener('submit', (event) => {
+          console.log('Ei onistu lähettää formia lähettäminen!!!!');
+          event.preventDefault();
+          constfirestName = document.getElementById('fname').value;
+          const lastName = document.getElementById('lname').value;
+
+          //tässä valissa lähetämme backendiin nämät tiedot
+          console.log(`Etunimi: ${firestName}, Sukunimi: ${lastName}`);
+
+          let choice = confirm(`onko nämät tiedot oikein: ${firestName}, ${lastName}?`);
+          console.log(choice);
+
+          let name = prompt('Mikä sinen nimi:');
+          console.log(name);
+          
+        });
       </script>
+
+    <script>
+       // ehto ? arvoJosTosi : arvoJosEpätosi
+      let age = 20;
+      let result = '';
+
+      if (age >= 18) {
+        console.log('aikuinen');
+        result = 'aikuinen';
+      } else {
+        result = 'lapsi';
+      } 
+      result = age >= 18 ? 'aikuinen' : 'lapsi';
+
+      console.log(result);
+    </script>
     </main>
   </body>
 </html>

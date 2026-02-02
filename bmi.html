@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="fi" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <title>BMI-laskin - HyteGym</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, Tahoma, sans-serif;
+            background-color: #f5f5f5;
+            color: #222;
+        }
+
+        /* الشريط العلوي */
+        .navbar {
+            background-color: #1f2a30;
+            padding: 15px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            color: #3bc4d6;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .nav-links a {
+            color: #ccc;
+            text-decoration: none;
+            margin-right: 20px;
+            font-size: 15px;
+        }
+
+        .nav-links a:hover {
+            color: #ffffff;
+        }
+
+        /* محتوى الصفحة */
+        .container {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 40px;
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            color: #1f2a30;
+        }
+
+        .bmi-form {
+            margin: 20px 0;
+        }
+
+        .bmi-form input {
+            padding: 10px;
+            margin: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .bmi-form button {
+            padding: 10px 20px;
+            background-color: #3bc4d6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .bmi-form button:hover {
+            background-color: #2a9cb0;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        footer {
+            background-color: #1f2a30;
+            color: #ccc;
+            text-align: center;
+            padding: 20px;
+            font-size: 14px;
+            margin-top: 60px;
+        }
+
+        footer span {
+            color: #3bc4d6;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- الشريط العلوي -->
+    <div class="navbar">
+        <div class="logo">HyteGym</div>
+        <div class="nav-links">
+            <a href="index.html">Koti</a>
+            <a href="js-treenaus.html">Miten voimme auttaa?</a>
+            <a href="bmi.html">BMI-laskin</a>
+            <a href="#">Yhteystiedot</a>
+        </div>
+    </div>
+
+    <!-- محتوى BMI -->
+    <div class="container">
+        <h1>BMI-laskin</h1>
+        <p>Laske painoindeksisi syöttämällä pituus (cm) ja paino (kg).</p>
+        <div class="bmi-form">
+            <input type="number" id="height" placeholder="Pituus (cm)" min="50" max="250">
+            <input type="number" id="weight" placeholder="Paino (kg)" min="1" max="300">
+            <button onclick="calculateBMI()">Laske BMI</button>
+        </div>
+        <div id="result"></div>
+        <div id="bmi-details" style="display:none; margin-top:25px;">
+
+    <p><strong>Mittaustuloksesi:</strong> <span id="bmi-value">0</span></p>
+
+    <table style="width:100%; border-collapse:collapse; margin-top:10px;">
+        <tr id="row-under">
+            <td>Alipaino</td>
+            <td>0 - 18.9</td>
+        </tr>
+        <tr id="row-normal">
+            <td>Normaali paino</td>
+            <td>19 - 24.9</td>
+        </tr>
+        <tr id="row-over">
+            <td>Ylipaino</td>
+            <td>25 - 29.9</td>
+        </tr>
+        <tr id="row-obese">
+            <td>Lihavuus</td>
+            <td>30+</td>
+        </tr>
+    </table>
+
+    <p id="analysis-text" style="margin-top:15px; text-align:left;"></p>
+
+</div>
+
+    </div>
+
+    <footer>
+        © 2026 <span>HyteGym</span> – Kaikki oikeudet pidätetään
+    </footer>
+
+    <script>
+function calculateBMI() {
+    const height = parseFloat(document.getElementById('height').value);
+    const weight = parseFloat(document.getElementById('weight').value);
+
+    if (isNaN(height) || isNaN(weight) || height <= 0 || weight <= 0) {
+        document.getElementById('result').innerText = 'Syötä kelvolliset arvot.';
+        return;
+    }
+
+    const bmi = (weight / ((height / 100) ** 2)).toFixed(1);
+
+    // reset highlighting
+    document.querySelectorAll("tr").forEach(row => row.classList.remove("active-row"));
+
+    let category = "";
+    let analysis = "";
+
+    if (bmi < 18.5) {
+        category = "Alipaino";
+        document.getElementById("row-under").classList.add("active-row");
+        analysis = "Painoindeksisi on alipainon puolella. On suositeltavaa keskustella terveydenhuollon ammattilaisen kanssa.";
+    } 
+    else if (bmi < 25) {
+        category = "Normaali paino";
+        document.getElementById("row-normal").classList.add("active-row");
+        analysis = "Painoindeksisi on normaalilla alueella. Jatka terveellisiä elämäntapoja.";
+    } 
+    else if (bmi < 30) {
+        category = "Ylipaino";
+        document.getElementById("row-over").classList.add("active-row");
+        analysis = "Painoindeksisi on ylipainon puolella. Liikunta ja tasapainoinen ruokavalio auttavat.";
+    } 
+    else {
+        category = "Lihavuus";
+        document.getElementById("row-obese").classList.add("active-row");
+        analysis = "Painoindeksisi on lihavuuden alueella. Terveyden seuranta on suositeltavaa.";
+    }
+
+    document.getElementById("result").innerText = `BMI: ${bmi} (${category})`;
+
+    document.getElementById("bmi-details").style.display = "block";
+    document.getElementById("bmi-value").innerText = bmi;
+    document.getElementById("analysis-text").innerText = "📈 Analyysi: " + analysis;
+}
+</script>
+
+
+</body>
+</html>
+
