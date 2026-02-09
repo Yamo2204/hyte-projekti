@@ -1,207 +1,425 @@
 <!DOCTYPE html>
 <html lang="fi" dir="ltr">
 <head>
-    <meta charset="UTF-8">
-    <title>BMI-laskin - HyteGym</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, Tahoma, sans-serif;
-            background-color: #f5f5f5;
-            color: #222;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Painoindeksilaskuri / BMI-laskuri - HyteGym</title>
 
-        /* الشريط العلوي */
-        .navbar {
-            background-color: #1f2a30;
-            padding: 15px 40px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
+  <style>
+    :root{
+      --dark:#1f2a30;
+      --accent:#3bc4d6;
+      --bg:#f5f5f5;
+      --card:#ffffff;
+      --text:#1b1b1b;
+      --muted:#666;
+      --border:#e6e6e6;
+      --btn:#2f3539;
+      --btnHover:#22272a;
+      --ok:#7CDB84;
+    }
 
-        .logo {
-            color: #3bc4d6;
-            font-size: 24px;
-            font-weight: bold;
-        }
+    *{ box-sizing:border-box; }
 
-        .nav-links a {
-            color: #ccc;
-            text-decoration: none;
-            margin-right: 20px;
-            font-size: 15px;
-        }
+    body{
+      margin:0;
+      font-family: Arial, Tahoma, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
 
-        .nav-links a:hover {
-            color: #ffffff;
-        }
+    /* ===== NAVBAR (مثل صفحاتك) ===== */
+    .navbar {
+      background-color: var(--dark);
+      padding: 15px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 10px 25px rgba(0,0,0,.20);
+    }
 
-        /* محتوى الصفحة */
-        .container {
-            max-width: 800px;
-            margin: 60px auto;
-            padding: 40px;
-            background-color: #ffffff;
-            border-radius: 16px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
+    .logo {
+      color: var(--accent);
+      font-size: 24px;
+      font-weight: bold;
+    }
 
-        h1 {
-            color: #1f2a30;
-        }
+    .nav-links a {
+      color: #ccc;
+      text-decoration: none;
+      margin-right: 20px;
+      font-size: 15px;
+    }
 
-        .bmi-form {
-            margin: 20px 0;
-        }
+    .nav-links a:hover { color:#fff; }
 
-        .bmi-form input {
-            padding: 10px;
-            margin: 10px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 16px;
-        }
+    /* ===== PAGE WRAP ===== */
+    .page{
+      max-width: 1100px;
+      margin: 40px auto 0;
+      padding: 0 18px 40px;
+      display:flex;
+      justify-content:center;
+    }
 
-        .bmi-form button {
-            padding: 10px 20px;
-            background-color: #3bc4d6;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-        }
+    /* ===== CARD (نفس شكل الصورة) ===== */
+    .bmi-card{
+      width: 420px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      box-shadow: 0 10px 25px rgba(0,0,0,.10);
+      overflow:hidden;
+    }
 
-        .bmi-form button:hover {
-            background-color: #2a9cb0;
-        }
+    .banner{
+      padding: 16px 18px 0;
+    }
 
-        #result {
-            margin-top: 20px;
-            font-size: 18px;
-            font-weight: bold;
-        }
+    .banner svg{
+      width:100%;
+      height:auto;
+      display:block;
+    }
 
-        footer {
-            background-color: #1f2a30;
-            color: #ccc;
-            text-align: center;
-            padding: 20px;
-            font-size: 14px;
-            margin-top: 60px;
-        }
+    .card-body{
+      padding: 12px 18px 18px;
+    }
 
-        footer span {
-            color: #3bc4d6;
-        }
-    </style>
+    .title{
+      margin: 8px 0 8px;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .desc{
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .label{
+      text-align:left;
+      font-size: 13px;
+      margin: 10px 0 6px;
+      color:#333;
+      font-weight: 700;
+    }
+
+    input{
+      width:100%;
+      padding: 10px 10px;
+      border: 1px solid #cfcfcf;
+      border-radius: 3px;
+      font-size: 14px;
+      outline:none;
+    }
+
+    input:focus{
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(59,196,214,.18);
+    }
+
+    .btn{
+      width:100%;
+      margin-top: 12px;
+      padding: 10px 12px;
+      background: var(--btn);
+      color:#fff;
+      border:none;
+      border-radius: 2px;
+      cursor:pointer;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .btn:hover{ background: var(--btnHover); }
+
+    .result-line{
+      margin: 18px 0 10px;
+      font-size: 13px;
+      color:#333;
+      text-align:left;
+    }
+
+    .result-line b{
+      font-weight: 800;
+    }
+
+    /* ===== TABLE (نفس الصورة) ===== */
+    table{
+      width:100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      font-size: 13px;
+    }
+
+    td{
+      border:1px solid #dcdcdc;
+      padding: 6px 8px;
+      text-align:left;
+      background:#fff;
+    }
+
+    tr.active td{
+      background: var(--ok);
+      font-weight: 800;
+    }
+
+    /* ===== analysis ===== */
+    .analysis{
+      margin-top: 14px;
+      text-align:left;
+      font-size: 12.5px;
+      color:#333;
+      line-height: 1.5;
+    }
+
+    .analysis .icon{
+      color:#f0b400;
+      font-weight:900;
+      margin-right: 6px;
+    }
+
+    footer{
+      background-color: var(--dark);
+      color: #ccc;
+      text-align: center;
+      padding: 20px;
+      font-size: 14px;
+      margin-top: 60px;
+    }
+
+    footer span { color: var(--accent); }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 520px){
+      .navbar{ padding: 14px 16px; }
+      .nav-links a{ margin-right: 12px; font-size:14px; }
+      .bmi-card{ width: 100%; }
+    }
+  </style>
 </head>
+
 <body>
 
-    <!-- الشريط العلوي -->
-    <div class="navbar">
-        <div class="logo">HyteGym</div>
-        <div class="nav-links">
-            <a href="index.html">Koti</a>
-            <a href="js-treenaus.html">Miten voimme auttaa?</a>
-            <a href="bmi.html">BMI-laskin</a>
-            <a href="#">Yhteystiedot</a>
-        </div>
+  <!-- NAVBAR -->
+  <div class="navbar">
+    <div class="logo">HyteGym</div>
+    <div class="nav-links">
+      <a href="index.html">Koti</a>
+      <a href="js-treenaus.html">Miten voimme auttaa?</a>
+      <a href="bmi.html">BMI-laskin</a>
+      <a href="#">Yhteystiedot</a>
     </div>
+  </div>
 
-    <!-- محتوى BMI -->
-    <div class="container">
-        <h1>BMI-laskin</h1>
-        <p>Laske painoindeksisi syöttämällä pituus (cm) ja paino (kg).</p>
-        <div class="bmi-form">
-            <input type="number" id="height" placeholder="Pituus (cm)" min="50" max="250">
-            <input type="number" id="weight" placeholder="Paino (kg)" min="1" max="300">
-            <button onclick="calculateBMI()">Laske BMI</button>
+  <!-- PAGE -->
+  <div class="page">
+
+    <!-- CARD -->
+    <div class="bmi-card">
+
+      <!-- Banner (يشبه صورة BMI أعلى الكرت) -->
+      <div class="banner">
+        <!-- SVG بسيط يعطي نفس إحساس الصورة -->
+        <svg viewBox="0 0 920 220" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0" width="920" height="220" fill="#ffffff"/>
+          <!-- labels -->
+          <g font-family="Arial" font-size="16" font-weight="700" fill="#ffffff">
+            <rect x="35" y="14" rx="10" ry="10" width="120" height="34" fill="#19b6c8"/>
+            <text x="95" y="37" text-anchor="middle">Underweight</text>
+
+            <rect x="175" y="14" rx="10" ry="10" width="120" height="34" fill="#53b84a"/>
+            <text x="235" y="37" text-anchor="middle">Normal</text>
+
+            <rect x="315" y="14" rx="10" ry="10" width="120" height="34" fill="#f0c000"/>
+            <text x="375" y="37" text-anchor="middle">Overweight</text>
+
+            <rect x="455" y="14" rx="10" ry="10" width="130" height="34" fill="#f28c2a"/>
+            <text x="520" y="37" text-anchor="middle">Obesity I</text>
+
+            <rect x="605" y="14" rx="10" ry="10" width="130" height="34" fill="#e25a2a"/>
+            <text x="670" y="37" text-anchor="middle">Obesity II</text>
+
+            <rect x="755" y="14" rx="10" ry="10" width="130" height="34" fill="#c93a35"/>
+            <text x="820" y="37" text-anchor="middle">Obesity III</text>
+          </g>
+
+          <!-- silhouettes (simple) -->
+          <g transform="translate(0,0)">
+            <g transform="translate(80,70)" fill="#19b6c8">
+              <circle cx="0" cy="10" r="12"/>
+              <rect x="-10" y="25" width="20" height="65" rx="10"/>
+              <rect x="-26" y="38" width="16" height="50" rx="8"/>
+              <rect x="10" y="38" width="16" height="50" rx="8"/>
+              <rect x="-18" y="88" width="14" height="55" rx="7"/>
+              <rect x="4" y="88" width="14" height="55" rx="7"/>
+            </g>
+
+            <g transform="translate(220,70)" fill="#53b84a">
+              <circle cx="0" cy="10" r="13"/>
+              <rect x="-14" y="25" width="28" height="70" rx="14"/>
+              <rect x="-32" y="38" width="18" height="55" rx="9"/>
+              <rect x="14" y="38" width="18" height="55" rx="9"/>
+              <rect x="-20" y="92" width="16" height="58" rx="8"/>
+              <rect x="4" y="92" width="16" height="58" rx="8"/>
+            </g>
+
+            <g transform="translate(360,70)" fill="#f0c000">
+              <circle cx="0" cy="10" r="14"/>
+              <rect x="-18" y="25" width="36" height="74" rx="18"/>
+              <rect x="-40" y="38" width="20" height="58" rx="10"/>
+              <rect x="20" y="38" width="20" height="58" rx="10"/>
+              <rect x="-24" y="96" width="18" height="60" rx="9"/>
+              <rect x="6" y="96" width="18" height="60" rx="9"/>
+            </g>
+
+            <g transform="translate(520,70)" fill="#f28c2a">
+              <circle cx="0" cy="10" r="15"/>
+              <rect x="-24" y="25" width="48" height="78" rx="24"/>
+              <rect x="-50" y="38" width="22" height="62" rx="11"/>
+              <rect x="28" y="38" width="22" height="62" rx="11"/>
+              <rect x="-30" y="100" width="20" height="62" rx="10"/>
+              <rect x="10" y="100" width="20" height="62" rx="10"/>
+            </g>
+
+            <g transform="translate(670,70)" fill="#e25a2a">
+              <circle cx="0" cy="10" r="16"/>
+              <rect x="-30" y="25" width="60" height="82" rx="30"/>
+              <rect x="-58" y="38" width="24" height="65" rx="12"/>
+              <rect x="34" y="38" width="24" height="65" rx="12"/>
+              <rect x="-36" y="104" width="22" height="64" rx="11"/>
+              <rect x="14" y="104" width="22" height="64" rx="11"/>
+            </g>
+
+            <g transform="translate(820,70)" fill="#c93a35">
+              <circle cx="0" cy="10" r="17"/>
+              <rect x="-36" y="25" width="72" height="86" rx="36"/>
+              <rect x="-68" y="38" width="26" height="68" rx="13"/>
+              <rect x="42" y="38" width="26" height="68" rx="13"/>
+              <rect x="-42" y="108" width="24" height="66" rx="12"/>
+              <rect x="18" y="108" width="24" height="66" rx="12"/>
+            </g>
+          </g>
+
+          <!-- BMI ranges under silhouettes -->
+          <g font-family="Arial" font-size="15" font-weight="700" fill="#ffffff">
+            <rect x="48" y="185" rx="8" ry="8" width="90" height="28" fill="#19b6c8"/>
+            <text x="93" y="205" text-anchor="middle">&lt; 18.5</text>
+
+            <rect x="190" y="185" rx="8" ry="8" width="90" height="28" fill="#53b84a"/>
+            <text x="235" y="205" text-anchor="middle">18.5 - 24.9</text>
+
+            <rect x="328" y="185" rx="8" ry="8" width="110" height="28" fill="#f0c000"/>
+            <text x="383" y="205" text-anchor="middle">25.0 - 29.9</text>
+
+            <rect x="480" y="185" rx="8" ry="8" width="90" height="28" fill="#f28c2a"/>
+            <text x="525" y="205" text-anchor="middle">30.0 - 34.9</text>
+
+            <rect x="630" y="185" rx="8" ry="8" width="90" height="28" fill="#e25a2a"/>
+            <text x="675" y="205" text-anchor="middle">35.0 - 39.9</text>
+
+            <rect x="782" y="185" rx="8" ry="8" width="90" height="28" fill="#c93a35"/>
+            <text x="827" y="205" text-anchor="middle">&gt; 40</text>
+          </g>
+        </svg>
+      </div>
+
+      <!-- BODY -->
+      <div class="card-body">
+        <div class="title">Painoindeksilaskuri / BMI-laskuri</div>
+        <div class="desc">
+          Painoindeksilaskurilla voit laskea pituuden ja painon perusteella painoindeksin (BMI, Body Mass Index).
         </div>
-        <div id="result"></div>
-        <div id="bmi-details" style="display:none; margin-top:25px;">
 
-    <p><strong>Mittaustuloksesi:</strong> <span id="bmi-value">0</span></p>
+        <div class="label">Anna painosi:</div>
+        <input type="number" id="weight" placeholder="kg" min="1" max="400" />
 
-    <table style="width:100%; border-collapse:collapse; margin-top:10px;">
-        <tr id="row-under">
-            <td>Alipaino</td>
-            <td>0 - 18.9</td>
-        </tr>
-        <tr id="row-normal">
-            <td>Normaali paino</td>
-            <td>19 - 24.9</td>
-        </tr>
-        <tr id="row-over">
-            <td>Ylipaino</td>
-            <td>25 - 29.9</td>
-        </tr>
-        <tr id="row-obese">
-            <td>Lihavuus</td>
-            <td>30+</td>
-        </tr>
-    </table>
+        <div class="label">Anna pituutesi:</div>
+        <input type="number" id="height" placeholder="cm" min="50" max="250" />
 
-    <p id="analysis-text" style="margin-top:15px; text-align:left;"></p>
+        <button class="btn" onclick="calculateBMI()">Laske indeksi</button>
 
-</div>
+        <div class="result-line">
+          <b>Mittaustuloksesi:</b> <span id="bmiValue">0</span>
+        </div>
+
+        <table>
+          <tr id="row-under"><td>Alipaino</td><td>0 - 18.9</td></tr>
+          <tr id="row-normal"><td>Normaali paino</td><td>19 - 24.9</td></tr>
+          <tr id="row-over"><td>Ylipaino</td><td>25.0 - 40.0 tai enemmän</td></tr>
+        </table>
+
+        <div class="analysis" id="analysisBox" style="display:none;">
+          <span class="icon">📈</span>
+          <b>Analyysi:</b>
+          <span id="analysisText"></span>
+        </div>
+
+        <div class="analysis" id="errorBox" style="display:none;">
+          <span class="icon">⚠️</span>
+          <b>Virhe:</b>
+          <span id="errorText"></span>
+        </div>
+      </div>
 
     </div>
+  </div>
 
-    <footer>
-        © 2026 <span>HyteGym</span> – Kaikki oikeudet pidätetään
-    </footer>
+  <footer>
+    © 2026 <span>HyteGym</span> – Kaikki oikeudet pidätetään
+  </footer>
 
-    <script>
-function calculateBMI() {
-    const height = parseFloat(document.getElementById('height').value);
-    const weight = parseFloat(document.getElementById('weight').value);
+  <script>
+    function clearActiveRows(){
+      document.querySelectorAll("table tr").forEach(tr => tr.classList.remove("active"));
+    }
 
-    if (isNaN(height) || isNaN(weight) || height <= 0 || weight <= 0) {
-        document.getElementById('result').innerText = 'Syötä kelvolliset arvot.';
+    function calculateBMI(){
+      const h = parseFloat(document.getElementById("height").value);
+      const w = parseFloat(document.getElementById("weight").value);
+
+      const errorBox = document.getElementById("errorBox");
+      const errorText = document.getElementById("errorText");
+      const analysisBox = document.getElementById("analysisBox");
+      const analysisText = document.getElementById("analysisText");
+
+      errorBox.style.display = "none";
+      analysisBox.style.display = "none";
+
+      if(!h || !w || h <= 0 || w <= 0){
+        errorText.textContent = "Syötä kelvolliset arvot (pituus ja paino).";
+        errorBox.style.display = "block";
         return;
+      }
+
+      const bmi = w / Math.pow(h/100, 2);
+      const bmiFixed = bmi.toFixed(1);
+
+      document.getElementById("bmiValue").textContent = bmiFixed;
+
+      clearActiveRows();
+
+      let msg = "";
+
+      // حسب شكل الجدول بالصورة (3 صفوف)
+      if(bmi < 19){
+        document.getElementById("row-under").classList.add("active");
+        msg = "Painoindeksisi on alle normaalin. Suositellaan tarkistamaan ravitsemus ja kokonaiskuormitus.";
+      } else if(bmi < 25){
+        document.getElementById("row-normal").classList.add("active");
+        msg = "Normaaliksi on valittu se painoindeksin alue, jossa ihmisen terveys on parhaimmillaan.";
+      } else {
+        document.getElementById("row-over").classList.add("active");
+        msg = "Painoindeksisi on normaalin yläpuolella. Pienet muutokset arjessa ja liikunnassa auttavat usein.";
+      }
+
+      analysisText.textContent = " " + msg;
+      analysisBox.style.display = "block";
     }
-
-    const bmi = (weight / ((height / 100) ** 2)).toFixed(1);
-
-    // reset highlighting
-    document.querySelectorAll("tr").forEach(row => row.classList.remove("active-row"));
-
-    let category = "";
-    let analysis = "";
-
-    if (bmi < 18.5) {
-        category = "Alipaino";
-        document.getElementById("row-under").classList.add("active-row");
-        analysis = "Painoindeksisi on alipainon puolella. On suositeltavaa keskustella terveydenhuollon ammattilaisen kanssa.";
-    } 
-    else if (bmi < 25) {
-        category = "Normaali paino";
-        document.getElementById("row-normal").classList.add("active-row");
-        analysis = "Painoindeksisi on normaalilla alueella. Jatka terveellisiä elämäntapoja.";
-    } 
-    else if (bmi < 30) {
-        category = "Ylipaino";
-        document.getElementById("row-over").classList.add("active-row");
-        analysis = "Painoindeksisi on ylipainon puolella. Liikunta ja tasapainoinen ruokavalio auttavat.";
-    } 
-    else {
-        category = "Lihavuus";
-        document.getElementById("row-obese").classList.add("active-row");
-        analysis = "Painoindeksisi on lihavuuden alueella. Terveyden seuranta on suositeltavaa.";
-    }
-
-    document.getElementById("result").innerText = `BMI: ${bmi} (${category})`;
-
-    document.getElementById("bmi-details").style.display = "block";
-    document.getElementById("bmi-value").innerText = bmi;
-    document.getElementById("analysis-text").innerText = "📈 Analyysi: " + analysis;
-}
-</script>
-
+  </script>
 
 </body>
 </html>
-
