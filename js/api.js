@@ -1,5 +1,9 @@
 import '../css/api.css';
 
+// ✅ ADDITION: import functions that api.js uses
+import { getItems, getItemById } from './items.js';
+// ملاحظة: deleteItemById إذا موجود بملف آخر نضيفه بعدين
+
 console.log('Scripti starttaa');
 
 // sync ja asyc ajatus ja demo
@@ -87,4 +91,58 @@ const consoleLogItems = async () => {
 
 consoleLogItems();
 
-// siirrettän varsinanne fetch omaksi geneeriseksi funktioksi
+// =========================
+// ADDITION: Get all items + render list on index.html (btnGetAll + itemsList)
+// =========================
+const btnGetAll = document.getElementById('btnGetAll');
+const itemsList = document.getElementById('itemsList');
+
+async function getAllItemsAndRender() {
+  try {
+    const response = await fetch('http://localhost:3000/api/items');
+    if (!response.ok) throw new Error('Failed to fetch items');
+
+    const data = await response.json();
+
+    // console.log المطلوب
+    console.log('GET ALL ITEMS (backend):', data);
+
+    // عرضهم على الصفحة (index.html)
+    if (itemsList) {
+      itemsList.innerHTML = '';
+      data.forEach((item) => {
+        const li = document.createElement('li');
+        li.textContent = `Item: ${item.id} | Tuote: ${item.name}`;
+        itemsList.appendChild(li);
+      });
+    }
+  } catch (error) {
+    console.error('Virhe:', error);
+  }
+}
+
+if (btnGetAll) {
+  btnGetAll.addEventListener('click', getAllItemsAndRender);
+}
+
+// =========================
+// Existing UI buttons/forms (ADDITION: null-checks so index.html won't crash)
+// =========================
+const getItemBtn = document.querySelector('.get_items');
+if (getItemBtn) {
+  getItemBtn.addEventListener('click', getItems);
+}
+
+const getFrom = document.querySelector('.get_item_from');
+if (getFrom) {
+  getFrom.addEventListener('submit', getItemById);
+}
+
+// deleteItemById مو موجود عندنا هنا، نخليه آمن بدون ما يكسر
+const deleteBtn = document.querySelector('.delete_item');
+if (deleteBtn) {
+  // إذا عندك deleteItemById بملف ثاني، ارسله وأنا أضيف import
+  deleteBtn.addEventListener('click', () => {
+    console.warn('deleteItemById not wired yet (function not imported).');
+  });
+}
