@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
+  <!-- Favicon - أيقونة الموقع -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💪</text></svg>">
+
   <!-- عنوان الصفحة / Sivun otsikko -->
   <title>HyteGym</title>
 
@@ -269,16 +272,29 @@
   </div>
 
   <!-- =========================
-       ITEMS (GET ALL) - إضافة فقط
-  ========================== -->
+       قسم عرض المستخدمين من قاعدة البيانات
+       هذا القسم مهم - يثبت أن Frontend متصل مع Backend
+       ========================== -->
   <div style="max-width:1200px;margin:40px auto;padding:0 28px;">
-    <button id="btnGetAll">Get all items</button>
-    <ul id="itemsList" style="margin-top:15px;"></ul>
+    <!-- العنوان الرئيسي للقسم -->
+    <h2 style="color:#2a4b7c;margin-bottom:20px;">Rekisteröityneet Käyttäjät</h2>
+    
+    <!-- زر لجلب المستخدمين من Backend عند الضغط عليه -->
+    <!-- عند الضغط على هذا الزر، يرسل طلب GET إلى http://localhost:3000/api/users -->
+    <button id="btnGetAll" style="background:#3bc4d6;color:white;border:none;padding:12px 24px;cursor:pointer;border-radius:5px;font-size:16px;">
+      Hae Käyttäjät
+    </button>
+    
+    <!-- قائمة فارغة - سيتم ملؤها بواسطة JavaScript من api.js -->
+    <!-- البيانات تأتي من: Backend → Database → Frontend -->
+    <ul id="itemsList" style="margin-top:20px;list-style:none;padding:0;">
+      <!-- سيتم ملء هذه القائمة تلقائياً عند تحميل الصفحة -->
+    </ul>
   </div>
 
   <!-- =========================
-       Vite module script - إضافة فقط
-       (api.js موجود داخل مجلد js)
+       ملف JavaScript الرئيسي - يتعامل مع API
+       هذا الملف يرسل الطلبات إلى Backend ويستقبل البيانات
   ========================== -->
   <script type="module" src="/js/api.js"></script>
 

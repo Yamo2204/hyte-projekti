@@ -71,58 +71,101 @@ async function getData() {
 
 getData();
 
-// ensimmäinen oma kutsu BE puolelle
+// ============================================
+// أول طلب إلى Backend الخاص بنا
+// هذه الدالة مهمة - تثبت الاتصال بين Frontend و Backend
+// ============================================
 const consoleLogItems = async () => {
   try {
-    // default on GET kutsu ilman optiota
-    const response = await fetch('http://localhost:3000/api/items');
+    // نرسل طلب GET إلى Backend على المنفذ 3000
+    // العنوان: http://localhost:3000/api/users
+    const response = await fetch('http://localhost:3000/api/users');
+    
+    // نحول الاستجابة إلى JSON (البيانات من قاعدة البيانات)
     const data = await response.json();
-    console.log('Haetaan omasta rajapinnasta!!!');
-    console.log(data);
+    
+    console.log('Haetaan omasta rajapinnasta!!!'); // نحضر من Backend
+    console.log(data); // نطبع جميع المستخدمين
 
+    // نمر على كل مستخدم ونطبع معلوماته
     data.forEach((rivi) => {
-      console.log(rivi);
-      console.log(rivi.name);
+      console.log(rivi); // طباعة المستخدم كامل
+      console.log(rivi.username); // طباعة اسم المستخدم فقط
     });
   } catch (error) {
-    console.error('Virhe:', error);
+    console.error('Virhe:', error); // إذا حدث خطأ في الاتصال
   }
 };
 
 consoleLogItems();
 
-// =========================
-// ADDITION: Get all items + render list on index.html (btnGetAll + itemsList)
-// =========================
+// ============================================
+// الدالة الرئيسية: جلب المستخدمين وعرضهم على الصفحة
+// هذه أهم دالة في المشروع - تربط Frontend مع Backend
+// ============================================
+
+// نمسك عنصر الزر من HTML
 const btnGetAll = document.getElementById('btnGetAll');
+
+// نمسك القائمة الفارغة من HTML (سنملؤها بالبيانات)
 const itemsList = document.getElementById('itemsList');
 
+// الدالة الرئيسية - async لأننا نتعامل مع Backend
 async function getAllItemsAndRender() {
   try {
-    const response = await fetch('http://localhost:3000/api/items');
+    // ======== الخطوة 1: إرسال طلب GET إلى Backend ========
+    // نطلب من Backend أن يعطينا قائمة المستخدمين
+    const response = await fetch('http://localhost:3000/api/users');
+    
+    // نتحقق: هل Backend أرسل الرد بنجاح؟
     if (!response.ok) throw new Error('Failed to fetch items');
 
+    // ======== الخطوة 2: تحويل البيانات من JSON ========
+    // Backend يرسل البيانات بصيغة JSON، نحولها إلى JavaScript Object
     const data = await response.json();
 
-    // console.log المطلوب
+    // نطبع البيانات في Console للتأكد (مهم للشرح)
     console.log('GET ALL ITEMS (backend):', data);
 
-    // عرضهم على الصفحة (index.html)
+    // ======== الخطوة 3: عرض البيانات على الصفحة ========
     if (itemsList) {
+      // نفرّغ القائمة أولاً (نحذف أي محتوى قديم)
       itemsList.innerHTML = '';
+      
+      // نمر على كل مستخدم من البيانات
       data.forEach((item) => {
+        // ننشئ عنصر <li> جديد لكل مستخدم
         const li = document.createElement('li');
-        li.textContent = `Item: ${item.id} | Tuote: ${item.name}`;
+        
+        // نضيف تنسيق CSS بسيط
+        li.style.padding = '10px';
+        li.style.marginBottom = '8px';
+        li.style.background = '#f0f0f0';
+        li.style.borderRadius = '4px';
+        
+        // نملأ العنصر بمعلومات المستخدم (اسم، بريد، ID)
+        li.innerHTML = `<strong>${item.username}</strong> - ${item.email} <small>(ID: ${item.user_id})</small>`;
+        
+        // نضيف العنصر إلى القائمة في الصفحة
         itemsList.appendChild(li);
       });
     }
   } catch (error) {
+    // ======== التعامل مع الأخطاء ========
+    // إذا فشل الاتصال بـ Backend، نعرض رسالة خطأ
     console.error('Virhe:', error);
+    if (itemsList) {
+      itemsList.innerHTML = '<li style="color:red;">Virhe haettaessa käyttäjiä!</li>';
+    }
   }
 }
 
+// ======== ربط الزر بالدالة ========
+// عندما يضغط المستخدم على الزر، نستدعي الدالة
 if (btnGetAll) {
   btnGetAll.addEventListener('click', getAllItemsAndRender);
+  // Lataa käyttäjät automaattisesti kun sivu aukeaa
+  getAllItemsAndRender();
 }
 
 // =========================

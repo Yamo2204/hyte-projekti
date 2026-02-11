@@ -1,46 +1,54 @@
+// ============================================
+// ملف items.js - مسؤول عن عرض المستخدمين في القائمة
+// ============================================
+
 import { fetchData } from './fetch.js';
 
-// Render Item in a List in the UI
-/////////////////////
+// ============================================
+// دالة لعرض قائمة المستخدمين على الصفحة
+// تستقبل البيانات من Backend وتعرضها
+// ============================================
 const renderFruitList = (items) => {
-  console.log('Teen kohta listan');
-  // Haetaan fruitlist UL
+  console.log('Teen kohta listan'); // "سأعمل قائمة الآن"
+  
+  // نمسك عنصر القائمة <ul> من HTML
   const list = document.querySelector('.fruitlist');
+  
+  // نفرّغ القائمة (نحذف أي محتوى قديم)
   list.innerHTML = '';
 
-  console.log(items);
+  console.log(items); // نطبع البيانات للتحقق
 
+  // نمر على كل مستخدم ونضيفه للقائمة
   items.forEach((item) => {
-    console.log(item.name);
+    console.log(item.username); // نطبع اسم المستخدم
+    
+    // ننشئ عنصر <li> جديد
     let li = document.createElement('li');
-    li.textContent = `Hedelmän id ${item.id} ja nimi ${item.name}`;
+    
+    // نملأه بمعلومات المستخدم
+    li.textContent = `User ID: ${item.user_id} - Username: ${item.username} - Email: ${item.email}`;
+    
+    // نضيفه للقائمة
     list.appendChild(li);
   });
-
-  // ja lisätään loopissa kaikki yksittäiset
-  // hedelmät listaan
 };
 
-// GEt items
-/////////////////////
-
+// ============================================
+// دالة لجلب جميع المستخدمين من Backend
+// ============================================
 const getItems = async () => {
-  //  const items = await fetchData(url, options);
-  const items = await fetchData('http://localhost:3000/api/items');
+  // نستخدم fetchData (موجود في fetch.js) لإرسال طلب GET
+  // العنوان: http://localhost:3000/api/users
+  const items = await fetchData('http://localhost:3000/api/users');
 
-  // jos BE puolelta tulee virhe niin informoidaan
-  // joko consoleen tai käyttäjälle virheestä
-
+  // نتحقق: هل جاء خطأ من Backend؟
   if (items.error) {
-    console.log(items.error);
-    return;
+    console.log(items.error); // نطبع الخطأ
+    return; // نوقف التنفيذ
   }
 
-  // tai jatketaan jä tehdään datalle jotain
-  // items.forEach((item) => {
-  //   console.log(item.name);
-  // });
-
+  // إذا نجح الطلب، نعرض المستخدمين على الصفحة
   renderFruitList(items);
 };
 
@@ -57,7 +65,7 @@ const getItemById = async (event) => {
   const itemId = idInput.value;
   console.log(itemId);
 
-  const url = `http://localhost:3000/api/items/${itemId}`;
+  const url = `http://localhost:3000/api/users/${itemId}`;
 
   const options = {
     method: 'GET',
@@ -74,7 +82,7 @@ const getItemById = async (event) => {
   }
 
   console.log(item);
-  alert(`Item found :) ${item.name}`);
+  alert(`User found :) ${item.username} - ${item.email}`);
 };
 
 export { getItems, getItemById };
