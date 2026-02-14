@@ -189,3 +189,116 @@ if (deleteBtn) {
     console.warn('deleteItemById not wired yet (function not imported).');
   });
 }
+
+// ============================================
+// INDEX PAGE: Items GET + POST homework section
+// ============================================
+const addItemForm = document.getElementById('addItemForm');
+const getItemsButton = document.getElementById('btnGetItems');
+const itemsApiList = document.getElementById('itemsApiList');
+const itemStatus = document.getElementById('itemStatus');
+
+const setItemStatus = (message, isError = false) => {
+  if (!itemStatus) return;
+  itemStatus.textContent = message;
+  itemStatus.style.color = isError ? '#b00020' : '#2a4b7c';
+};
+
+const renderItemsApiList = (items) => {
+  if (!itemsApiList) return;
+
+  itemsApiList.innerHTML = '';
+
+  items.forEach((item) => {
+    const li = document.createElement('li');
+    li.style.padding = '10px';
+    li.style.marginBottom = '8px';
+    li.style.background = '#f0f0f0';
+    li.style.borderRadius = '4px';
+    li.textContent = `ID: ${item.item_id} - ${item.name}${item.weight ? ` (${item.weight} g)` : ''}`;
+    itemsApiList.appendChild(li);
+  });
+};
+
+const fetchItemsForIndex = async () => {
+  try {
+    setItemStatus('Haetaan itemit...');
+    const response = await fetch('http://localhost:3000/api/items');
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const items = await response.json();
+    renderItemsApiList(items);
+    setItemStatus(`Itemit haettu (${items.length} kpl)`);
+  } catch (error) {
+    console.error('Items GET error:', error);
+    setItemStatus(`Virhe haettaessa itemit: ${error.message}`, true);
+  }
+};
+
+const postItemFromIndexForm = async (event) => {
+  event.preventDefault();
+
+  const nameInput = document.getElementById('newItemName');
+  const weightInput = document.getElementById('newItemWeight');
+
+  const name = nameInput?.value?.trim();
+  const weightRaw = weightInput?.value?.trim();
+
+  if (!name) {
+    setItemStatus('Name on pakollinen', true);
+    return;
+  }
+
+  const payload = { name };
+
+  if (weightRaw) {
+    const weight = Number(weightRaw);
+    if (!Number.isFinite(weight)) {
+      setItemStatus('Weight pitää olla numero', true);
+      return;
+    }
+    payload.weight = weight;
+  }
+
+  try {
+    setItemStatus('Lisätään item...');
+    const response = await fetch('http://localhost:3000/api/items', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || data.error || 'Lisäys epäonnistui');
+    }
+
+    if (addItemForm) {
+      addItemForm.reset();
+    }
+
+    setItemStatus(`Item lisätty: ${data.name || name}`);
+    fetchItemsForIndex();
+  } catch (error) {
+    console.error('Items POST error:', error);
+    setItemStatus(`Virhe lisäyksessä: ${error.message}`, true);
+  }
+};
+
+if (addItemForm) {
+  addItemForm.addEventListener('submit', postItemFromIndexForm);
+}
+
+if (getItemsButton) {
+  getItemsButton.addEventListener('click', fetchItemsForIndex);
+}
+
+if (addItemForm && getItemsButton) {
+  fetchItemsForIndex();
+}

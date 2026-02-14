@@ -112,6 +112,34 @@
             background: #dc3545;
             color: white;
         }
+
+        button.check {
+            background: #6c757d;
+            color: white;
+        }
+
+        button.del {
+            background: #c0392b;
+            color: white;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            background: #fff;
+        }
+
+        th, td {
+            border: 1px solid #e0e0e0;
+            padding: 10px;
+            text-align: left;
+        }
+
+        thead {
+            background: #0c9f86;
+            color: #fff;
+        }
         
         /* Snackbar */
         #snackbar {
@@ -180,12 +208,56 @@
         <button class="success" onclick="getUserById()">Hae user</button>
         <button class="danger" onclick="deleteUser()">Poista user</button>
     </div>
+
+    <div class="section">
+        <h2>3. Items API (GET + POST)</h2>
+        <p>Lisää uusi item (hedelmä) ja hae item-lista backendistä endpointista /api/items.</p>
+
+        <div class="form-group">
+            <label for="newItemName">Name:</label>
+            <input type="text" id="newItemName" placeholder="esim. Mandariini" required>
+        </div>
+
+        <div class="form-group">
+            <label for="newItemWeight">Weight (optional):</label>
+            <input type="number" id="newItemWeight" placeholder="esim. 86">
+        </div>
+
+        <button class="success" onclick="addItem()">Add Item</button>
+        <button class="primary" onclick="getAllItems()">Get Items</button>
+
+        <h3>Items Lista:</h3>
+        <ul id="itemsApiList"></ul>
+    </div>
+
+    <div class="section">
+        <h2>4. Hae items ja generoi niistä taulukko</h2>
+        <p>
+            Haetuista tiedoista generoidaan taulukko dynaamisesti DOM metodeilla.
+            Jokaiselle riville luodaan Info- ja Delete-napit, joilla on data-id-attribuutti.
+        </p>
+
+        <button class="primary" onclick="generateItemsTable()">Generoi taulukko</button>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Item Name</th>
+                    <th>Info</th>
+                    <th>Delete</th>
+                    <th>ID</th>
+                </tr>
+            </thead>
+            <tbody id="itemsTableBody"></tbody>
+        </table>
+    </div>
     
     <!-- Snackbar viestit -->
     <div id="snackbar"></div>
 
     <script>
         const API_URL = 'http://localhost:3000/api/users';
+        const ITEMS_API_URL = 'http://localhost:3000/api/items';
         
         // ===== Snackbar Funktiot =====
         function showSnackbar(message, type = 'success') {
@@ -316,10 +388,184 @@
                 showSnackbar(error.message, 'error');
             }
         }
+
+        // ===== 3. GET - Hae kaikki items =====
+        async function getAllItems() {
+            try {
+                const response = await fetch(ITEMS_API_URL);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP Error: ${response.status}`);
+                }
+
+                const items = await response.json();
+                renderItemsList(items);
+                showSnackbar('Items haettu onnistuneesti!', 'success');
+            } catch (error) {
+                console.error('Virhe items-haussa:', error);
+                showSnackbar(`Virhe items-haussa: ${error.message}`, 'error');
+            }
+        }
+
+        function renderItemsList(items) {
+            const itemsList = document.getElementById('itemsApiList');
+            itemsList.innerHTML = '';
+
+            items.forEach((item) => {
+                const li = document.createElement('li');
+                li.textContent = `ID: ${item.item_id} - ${item.name}${item.weight ? ` (${item.weight} g)` : ''}`;
+                itemsList.appendChild(li);
+            });
+        }
+
+        // ===== 4. DOM Table - generoi items taulukkoon =====
+        async function generateItemsTable() {
+            try {
+                const response = await fetch(ITEMS_API_URL);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP Error: ${response.status}`);
+                }
+
+                const items = await response.json();
+                renderItemsTable(items);
+                showSnackbar('Items-taulukko luotu!', 'success');
+            } catch (error) {
+                console.error('Virhe taulukon haussa:', error);
+                showSnackbar(`Virhe taulukon haussa: ${error.message}`, 'error');
+            }
+        }
+
+        function renderItemsTable(items) {
+            const tableBody = document.getElementById('itemsTableBody');
+            tableBody.innerHTML = '';
+
+            items.forEach((item) => {
+                const itemId = item.item_id ?? item.id;
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.name}</td>
+                    <td><button class="check" data-id="${itemId}">Info</button></td>
+                    <td><button class="del" data-id="${itemId}">Delete</button></td>
+                    <td>${itemId}</td>
+                `;
+
+                tableBody.appendChild(row);
+            });
+        }
+
+        const itemsTableBody = document.getElementById('itemsTableBody');
+        itemsTableBody.addEventListener('click', async (event) => {
+            const target = event.target;
+            if (!(target instanceof HTMLButtonElement)) {
+                return;
+            }
+
+            const itemId = target.dataset.id;
+            if (!itemId) {
+                return;
+            }
+
+            // Info button
+            if (target.classList.contains('check')) {
+                try {
+                    const response = await fetch(`${ITEMS_API_URL}/${itemId}`);
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.message || data.error || 'Item ei löydy');
+                    }
+
+                    alert(`Item info:\nID: ${data.item_id ?? data.id}\nName: ${data.name}\nWeight: ${data.weight ?? '-'} `);
+                } catch (error) {
+                    console.error('Virhe item info haussa:', error);
+                    showSnackbar(`Virhe item info haussa: ${error.message}`, 'error');
+                }
+            }
+
+            // Delete button
+            if (target.classList.contains('del')) {
+                if (!confirm(`Poistetaanko item ID ${itemId}?`)) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`${ITEMS_API_URL}/${itemId}`, {
+                        method: 'DELETE'
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.message || data.error || 'Poisto epäonnistui');
+                    }
+
+                    showSnackbar(data.message || 'Item poistettu!', 'success');
+                    getAllItems();
+                    generateItemsTable();
+                } catch (error) {
+                    console.error('Virhe item poistossa:', error);
+                    showSnackbar(`Virhe item poistossa: ${error.message}`, 'error');
+                }
+            }
+        });
+
+        // ===== 3. POST - Lisää uusi item =====
+        async function addItem() {
+            const nameInput = document.getElementById('newItemName');
+            const weightInput = document.getElementById('newItemWeight');
+
+            const name = nameInput.value.trim();
+            const weightRaw = weightInput.value.trim();
+
+            if (!name) {
+                showSnackbar('Name on pakollinen!', 'error');
+                return;
+            }
+
+            const payload = { name };
+
+            if (weightRaw !== '') {
+                const weight = Number(weightRaw);
+                if (!Number.isFinite(weight)) {
+                    showSnackbar('Weight pitää olla numero!', 'error');
+                    return;
+                }
+                payload.weight = weight;
+            }
+
+            try {
+                const response = await fetch(ITEMS_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || data.error || 'Lisäys epäonnistui');
+                }
+
+                nameInput.value = '';
+                weightInput.value = '';
+
+                showSnackbar(`Item lisätty: ${data.name || name}`, 'success');
+                getAllItems();
+            } catch (error) {
+                console.error('Virhe item-lisäyksessä:', error);
+                showSnackbar(`Virhe item-lisäyksessä: ${error.message}`, 'error');
+            }
+        }
         
         // Lataa users automaattisesti sivun latautuessa
         window.addEventListener('load', () => {
             getAllUsers();
+            getAllItems();
+            generateItemsTable();
         });
     </script>
 </body>
