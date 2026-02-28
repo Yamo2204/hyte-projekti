@@ -18,6 +18,42 @@
             padding: 20px;
             background: #f4f4f4;
         }
+
+        .navbar {
+            background: #1f2a30;
+            border-radius: 6px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .logo {
+            color: #3bc4d6;
+            font-weight: 800;
+            font-size: 22px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: #c9c9c9;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #ffffff;
+        }
         
         h1 {
             color: #333;
@@ -182,6 +218,17 @@
     </style>
 </head>
 <body>
+    <div class="navbar">
+        <div class="logo">HyteGym</div>
+        <div class="nav-links">
+            <a href="index.html">Koti</a>
+            <a class="active" href="items-page.html">Items</a>
+            <a href="bmi.html">BMI-laskin</a>
+            <a href="diary.html">Päiväkirja</a>
+            <a href="login.html">Login</a>
+        </div>
+    </div>
+
     <!-- Tehtävä 1: Hae kaikki users ja tulosta konsoliin sekä listaan -->
     <div class="section">
         <h2>1. GET - Hae kaikki users</h2>

@@ -11,6 +11,8 @@ export default defineConfig({
         home: resolve(__dirname, 'index.html'),
         bmi: resolve(__dirname, 'bmi.html'),
         items: resolve(__dirname, 'items-page.html'),
+        diary: resolve(__dirname, 'diary.html'),
+        login: resolve(__dirname, 'login.html'),
       },
     },
   },
