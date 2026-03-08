@@ -41,16 +41,18 @@ console.log('3');
 // tämä on fetch käyttäen promisea (eli lupausta)
 // ja ON asykroninen
 
-fetch('https://api.restful-api.dev/objects')
+const EXTERNAL_DEMO_API = 'https://jsonplaceholder.typicode.com/posts?_limit=5';
+
+fetch(EXTERNAL_DEMO_API)
   .then((response) => {
     console.log(response);
     if (!response.ok) {
-      throw new Error('Verkkovastaus ei ollut kunnossa');
+      throw new Error(`Verkkovastaus ei ollut kunnossa (HTTP ${response.status})`);
     }
     return response.json();
   })
   .then((data) => {
-    console.log(data);
+    console.log('External demo data:', data);
   })
   .catch((error) => {
     console.error('Fetch-operaatiossa ilmeni ongelma:', error);
@@ -61,9 +63,14 @@ fetch('https://api.restful-api.dev/objects')
 
 async function getData() {
   try {
-    const response = await fetch('https://api.restful-api.dev/objects');
+    const response = await fetch(EXTERNAL_DEMO_API);
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
     const data = await response.json();
-    console.log(data);
+    console.log('External demo data (async/await):', data);
   } catch (error) {
     console.error('Virhe:', error);
   }
