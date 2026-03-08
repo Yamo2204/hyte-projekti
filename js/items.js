@@ -39,8 +39,8 @@ const renderFruitList = (items) => {
 // ============================================
 const getItems = async () => {
   // نستخدم fetchData (موجود في fetch.js) لإرسال طلب GET
-  // العنوان: http://localhost:3000/api/users
-  const items = await fetchData('http://localhost:3000/api/users');
+  // العنوان: /api/users
+  const items = await fetchData('/api/users');
 
   // نتحقق: هل جاء خطأ من Backend؟
   if (items.error) {
@@ -65,7 +65,7 @@ const getItemById = async (event) => {
   const itemId = idInput.value;
   console.log(itemId);
 
-  const url = `http://localhost:3000/api/users/${itemId}`;
+  const url = `/api/users/${itemId}`;
 
   const options = {
     method: 'GET',

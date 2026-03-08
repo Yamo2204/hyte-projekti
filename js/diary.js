@@ -23,6 +23,41 @@ const clearCards = () => {
   }
 };
 
+const getAuthState = () => {
+  const token = localStorage.getItem('token');
+  const username = localStorage.getItem('username');
+
+  return {
+    token,
+    username,
+    isLoggedIn: Boolean(token),
+  };
+};
+
+const renderAuthStatus = () => {
+  const { isLoggedIn, username } = getAuthState();
+
+  if (logoutBtn) {
+    logoutBtn.style.display = isLoggedIn ? 'inline-block' : 'none';
+  }
+
+  if (fetchEntriesBtn) {
+    fetchEntriesBtn.style.display = isLoggedIn ? 'inline-block' : 'none';
+  }
+
+  if (!isLoggedIn) {
+    setStatus('Kirjaudu ensin sisään, jotta token on localStoragessa.', true);
+    return;
+  }
+
+  if (username) {
+    setStatus(`Olet kirjautunut sisään käyttäjänä: ${username}`);
+    return;
+  }
+
+  setStatus('Olet kirjautunut sisään. Voit hakea päiväkirjamerkinnät.');
+};
+
 const createCard = (entry, index) => {
   const card = document.createElement('article');
   card.className = 'card';
@@ -58,13 +93,13 @@ const renderEntries = (entries) => {
 };
 
 const fetchEntriesFromApi = async () => {
-  const token = localStorage.getItem('token');
+  const { token } = getAuthState();
 
   if (!token) {
     return { error: 'Token puuttuu. Kirjaudu ensin sisään.' };
   }
 
-  const response = await fetchData('http://localhost:3000/api/entries', {
+  const response = await fetchData('/api/entries', {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -102,8 +137,10 @@ const fetchEntries = async () => {
 
 const logout = () => {
   localStorage.removeItem('token');
+  localStorage.removeItem('username');
   setStatus('Uloskirjautuminen valmis. Token poistettu localStoragesta.');
   clearCards();
+  renderAuthStatus();
 };
 
 if (fetchEntriesBtn) {
@@ -113,3 +150,5 @@ if (fetchEntriesBtn) {
 if (logoutBtn) {
   logoutBtn.addEventListener('click', logout);
 }
+
+renderAuthStatus();

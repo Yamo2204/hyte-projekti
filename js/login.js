@@ -22,7 +22,7 @@ const login = async (event) => {
 
   setStatus('Kirjaudutaan sisään...');
 
-  const response = await fetchData('http://localhost:3000/api/login', {
+  const response = await fetchData('/api/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -36,6 +36,7 @@ const login = async (event) => {
   }
 
   localStorage.setItem('token', response.token);
+  localStorage.setItem('username', response.user?.username || username);
   setStatus('Kirjautuminen onnistui. Siirrytään päiväkirjaan...');
 
   setTimeout(() => {

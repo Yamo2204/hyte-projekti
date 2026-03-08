@@ -49,19 +49,19 @@
 </head>
 <body>
     <h1>Backend Connection Test</h1>
-    <p>Backend URL: <strong>http://localhost:3000</strong></p>
+    <p>Backend URL: <strong>/api (proxied to localhost:3000 in Vite)</strong></p>
 
     <div class="test-section">
         <h2>Test Endpoints</h2>
+        <button onclick="testEndpoint('/api/health')">Test /api/health</button>
         <button onclick="testEndpoint('/api/users')">Test /api/users</button>
+        <button onclick="testEndpoint('/api/items')">Test /api/items</button>
         <button onclick="testEndpoint('/api/entries')">Test /api/entries</button>
-        <button onclick="testEndpoint('/api/medications')">Test /api/medications</button>
-        <button onclick="testEndpoint('/api/exercises')">Test /api/exercises</button>
         <div id="result" class="result" style="display: none;"></div>
     </div>
 
     <script>
-        const API_URL = 'http://localhost:3000';
+        const API_URL = '';
 
         async function testEndpoint(endpoint) {
             const resultDiv = document.getElementById('result');
@@ -82,7 +82,7 @@
                 }
             } catch (error) {
                 resultDiv.className = 'result error';
-                resultDiv.textContent = `❌ Connection Error:\n${error.message}\n\nMake sure backend is running on ${API_URL}`;
+                resultDiv.textContent = `❌ Connection Error:\n${error.message}\n\nMake sure backend is running on http://localhost:3000 and Vite dev server is running`;
             }
         }
 

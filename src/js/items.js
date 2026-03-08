@@ -1,6 +1,6 @@
 import { fetchData } from './fetch.js';
 
-const ITEMS_API = 'http://localhost:3000/api/items';
+const ITEMS_API = '/api/items';
 
 const renderItems = (items) => {
   const list = document.querySelector('.fruitlist');

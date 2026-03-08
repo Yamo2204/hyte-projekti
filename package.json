@@ -6,10 +6,12 @@
   "scripts": {
     "dev": "vite",
     "backend": "node backend/server.js",
+    "dev:all": "concurrently \"npm run backend\" \"npm run dev -- --host\"",
     "build": "vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
+    "concurrently": "^9.2.1",
     "vite": "^7.2.4"
   },
   "dependencies": {

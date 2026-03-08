@@ -11,28 +11,31 @@
  * 
  * @returns {Object} البيانات من Backend بصيغة JSON
  */
-const fetchData = async (url, options = {}) => {
-  try {
-    // ======== نرسل الطلب إلى Backend ========
-    // fetch() - دالة مدمجة في JavaScript ترسل HTTP requests
-    const response = await fetch(url, options);
+const BACKEND_ORIGIN = 'http://localhost:3000';
 
-    // ======== نتحقق من نجاح الطلب ========
-    // response.ok = true إذا كان status code 200-299
+const resolveApiUrl = (url) => {
+  if (typeof url === 'string' && url.startsWith('/api')) {
+    return `${BACKEND_ORIGIN}${url}`;
+  }
+
+  return url;
+};
+
+const fetchData = async (url, options = {}) => {
+  const targetUrl = resolveApiUrl(url);
+
+  try {
+    const response = await fetch(targetUrl, options);
+    const data = await response.json();
+
     if (!response.ok) {
-      // إذا فشل الطلب (مثل 404, 500)
-      const errorData = await response.json();
-      return { error: errorData.message || 'An error occurred' };
+      return { error: data.message || data.error || `HTTP ${response.status}` };
     }
-    
-    // ======== إذا نجح الطلب، نرجع البيانات ========
-    return await response.json(); // نحول الرد من JSON إلى JavaScript Object
-    
+
+    return data;
   } catch (error) {
-    // ======== التعامل مع أخطاء الاتصال ========
-    // مثل: Backend مطفي، أو لا يوجد إنترنت
     console.error('fetchData() error:', error.message);
-    return { error: error.message };
+    return { error: error.message || 'Network error' };
   }
 };
 
