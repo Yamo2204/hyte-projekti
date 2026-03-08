@@ -131,8 +131,9 @@ const fetchEntries = async () => {
     return;
   }
 
-  renderEntries(entries);
-  setStatus(`Merkinnät haettu (${entries.length} kpl)`);
+  const entriesToShow = entries.slice(0, 3);
+  renderEntries(entriesToShow);
+  setStatus(`Merkinnät haettu (${entriesToShow.length}/${entries.length} kpl)`);
 };
 
 const logout = () => {
