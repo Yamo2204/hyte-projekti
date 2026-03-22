@@ -1,0 +1,7 @@
+robotframework
+robotframework-browser
+robotframework-requests
+robotframework-crypto
+robotframework-tidy
+python-dotenv
+Flask

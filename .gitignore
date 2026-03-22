@@ -1,0 +1,16 @@
+.env
+__pycache__/
+.venv/
+venv/
+node_modules/
+playwright-report/
+browser/
+tests/keys/private_key.json
+tests/keys/password_hash.json
+outputs/*.html
+outputs/*.xml
+outputs/*.png
+outputs/*.log
+outputs/*.txt
+outputs/playwright-log.txt
+!outputs/.gitkeep
